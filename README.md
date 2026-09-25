@@ -60,7 +60,23 @@ El programa muestra en consola la información de las habitaciones almacenadas.
 Dependiendo de la opción seleccionada por el usuario, las habitaciones pueden mostrarse en su orden original o después de haber sido ordenadas por número, precio o capacidad.
 
 ## Desarrollo de competencias
+SICT0301: Evalúa los componentes
+Hace un análisis de complejidad correcto y completo para los algoritmos de ordenamiento usados en el programa.
+En este proyecto se utiliza Merge Sort para ordenar los registros de las habitaciones.
+Merge Sort divide el conjunto de datos aproximadamente a la mitad en cada llamada recursiva y posteriormente combina las partes ya ordenadas.
+La división de los datos genera aproximadamente log n niveles de recursión. En cada nivel se recorren los n elementos para realizar la combinación de los datos.
+Por esta razón, la complejidad temporal del algoritmo es:
+- Mejor caso: O(n log n)
+- Caso promedio: O(n log n)
+- Peor caso: O(n log n)
+A diferencia de algunos algoritmos sencillos como Bubble Sort o Selection Sort, que pueden tener una complejidad de O(n²), Merge Sort mantiene su complejidad de O(n log n) aunque los datos se encuentren originalmente desordenados.
+En cuanto a memoria, Merge Sort requiere espacio adicional para almacenar temporalmente los elementos utilizados durante la combinación, por lo que tiene una complejidad espacial de O(n).
+El análisis se puede observar en la implementación del algoritmo Merge Sort dentro de main.cpp, donde los datos se dividen de manera recursiva y posteriormente se vuelven a unir en orden.
 
-### SICT0301: Evalúa los componentes
-
-### SICT0302: Toma decisiones
+SICT0302: Toma decisiones
+Selecciona un algoritmo de ordenamiento adecuado al problema y lo usa correctamente.
+Se seleccionó Merge Sort porque el sistema puede llegar a manejar una cantidad mayor de registros de habitaciones conforme avance el proyecto.
+Aunque para una cantidad pequeña de habitaciones la diferencia entre distintos algoritmos puede ser poco visible, Merge Sort ofrece una complejidad de O(n log n), lo cual permite que el algoritmo mantenga un buen desempeño cuando aumenta el número de datos.
+Otra ventaja es que el mismo algoritmo puede adaptarse para ordenar los objetos utilizando distintos atributos. En este proyecto se utiliza para organizar las habitaciones por número, precio o capacidad.
+De esta manera no es necesario desarrollar un algoritmo completamente diferente para cada criterio de ordenamiento, sino que se utiliza la misma lógica de Merge Sort cambiando el atributo que se compara.
+La implementación y utilización del algoritmo se puede observar dentro de main.cpp, donde las habitaciones precargadas son organizadas de acuerdo con la opción seleccionada por el usuario.
