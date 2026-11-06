@@ -1,39 +1,14 @@
 #include <fstream>
 #include <iostream>
 #include <string>
-#include <vector>
 
 #include "habitacion.h"
-#include "sorts.h"
+#include "lista.h"
 
 using namespace std;
 
-// Muestra las habitaciones guardadas en el vector.
-void mostrarHabitaciones(const vector<Habitacion> &habitaciones) {
-    if (habitaciones.empty()) {
-        cout << "No hay habitaciones para mostrar." << endl;
-        return;
-    }
-
-    for (int i = 0; i < static_cast<int>(habitaciones.size()); i++) {
-        cout << habitaciones[i].toString() << endl;
-    }
-}
-
-// Busca una habitacion por numero.
-void buscarHabitacion(const vector<Habitacion> &habitaciones, int numero) {
-    for (int i = 0; i < static_cast<int>(habitaciones.size()); i++) {
-        if (habitaciones[i].getNumero() == numero) {
-            cout << "Habitacion encontrada:" << endl;
-            cout << habitaciones[i].toString() << endl;
-            return;
-        }
-    }
-    cout << "No se encontro la habitacion " << numero << "." << endl;
-}
-
 int main() {
-    vector<Habitacion> habitaciones;
+    ListaHabitaciones habitaciones;
     ifstream archivo("habitaciones.txt");
     int numero;
     string tipo;
@@ -47,25 +22,27 @@ int main() {
 
     while (archivo >> numero >> tipo >> capacidad >> precio) {
         Habitacion habitacion(numero, tipo, capacidad, precio);
-        habitaciones.push_back(habitacion);
+        habitaciones.agregar(habitacion);
     }
     archivo.close();
 
-    Sorts<Habitacion> sorts;
-    int opcion = 0;
+    // El orden inicial del sistema siempre es por numero de habitacion.
+    habitaciones.ordenar(1);
 
+    int opcion = 0;
     do {
         cout << "\n===== HOTEL =====" << endl;
         cout << "1. Mostrar habitaciones" << endl;
         cout << "2. Ordenar por numero" << endl;
-        cout << "3. Buscar habitacion por numero" << endl;
-        cout << "4. Salir" << endl;
+        cout << "3. Ordenar por tipo" << endl;
+        cout << "4. Ordenar por capacidad" << endl;
+        cout << "5. Ordenar por precio" << endl;
+        cout << "6. Buscar habitacion por numero" << endl;
+        cout << "7. Salir" << endl;
         cout << "Selecciona una opcion: ";
 
         if (!(cin >> opcion)) {
-            if (cin.eof()) {
-                break;
-            }
+            if (cin.eof()) break;
             cin.clear();
             cin.ignore(10000, '\n');
             cout << "Opcion no valida." << endl;
@@ -74,34 +51,33 @@ int main() {
 
         if (opcion == 1) {
             cout << "\nHABITACIONES REGISTRADAS" << endl;
-            mostrarHabitaciones(habitaciones);
-        }
-        else if (opcion == 2) {
-            vector<Habitacion> ordenadas = sorts.selectionSort(habitaciones);
-            cout << "\nHABITACIONES ORDENADAS POR NUMERO" << endl;
-            mostrarHabitaciones(ordenadas);
-        }
-        else if (opcion == 3) {
+            habitaciones.mostrar();
+        } else if (opcion >= 2 && opcion <= 5) {
+            habitaciones.ordenar(opcion - 1);
+            cout << "\nHABITACIONES ORDENADAS" << endl;
+            habitaciones.mostrar();
+        } else if (opcion == 6) {
             cout << "Numero de habitacion: ";
             if (cin >> numero) {
-                buscarHabitacion(habitaciones, numero);
-            }
-            else {
-                if (cin.eof()) {
-                    break;
+                const Habitacion *encontrada = habitaciones.buscar(numero);
+                if (encontrada != 0) {
+                    cout << "Habitacion encontrada:" << endl;
+                    cout << encontrada->toString() << endl;
+                } else {
+                    cout << "No se encontro la habitacion " << numero << "." << endl;
                 }
+            } else {
+                if (cin.eof()) break;
                 cin.clear();
                 cin.ignore(10000, '\n');
                 cout << "Numero no valido." << endl;
             }
-        }
-        else if (opcion == 4) {
+        } else if (opcion == 7) {
             cout << "Hasta luego." << endl;
-        }
-        else {
+        } else {
             cout << "Opcion no valida." << endl;
         }
-    } while (opcion != 4);
+    } while (opcion != 7);
 
     return 0;
 }
