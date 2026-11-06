@@ -1,41 +1,29 @@
 # Proyecto: Sistema de administración de habitaciones de un hotel
 
-Este proyecto consiste en un programa en C++ para administrar y organizar la información de las habitaciones de un hotel. Cada habitación tiene un número, tipo, capacidad y precio por noche.
-
-Los datos se encuentran en el archivo `habitaciones.txt` y se almacenan en un `vector<Habitacion>` para poder organizarlos y consultarlos.
+Este programa en C++ almacena habitaciones de un hotel. Cada una tiene un número, tipo, capacidad y precio por noche. Los registros se leen desde `habitaciones.txt` y se guardan en una lista simplemente enlazada creada con nodos dinámicos. El usuario puede consultar las habitaciones, buscarlas por número y ordenarlas por distintos criterios desde un menú.
 
 ## Descripción del avance 1
 
-En el primer avance se desarrolló la clase `Habitacion`, la lectura de datos desde `habitaciones.txt` y el ordenamiento de las habitaciones de menor a mayor por número mediante Selection Sort.
-
-El programa podía mostrar las habitaciones en su orden original y después ordenadas, pero solamente realizaba estas acciones una vez.
+Se creó la clase `Habitacion` con los datos de cada registro y se implementó la lectura del archivo `habitaciones.txt`. La primera versión usaba un `vector<Habitacion>` y Selection Sort para ordenar por número. En esa etapa se mostraban los datos y el resultado del ordenamiento una sola vez.
 
 ## Descripción del avance 2
 
-En este segundo avance se mantiene el almacenamiento de las habitaciones en un `vector<Habitacion>` y se agrega un menú interactivo para que el usuario pueda realizar diferentes operaciones sin tener que ejecutar nuevamente el programa.
+En este avance se agregó un menú interactivo para hacer varias consultas sin reiniciar el programa. Al principio se utilizó un vector y búsqueda secuencial.
 
-Las opciones disponibles son:
-
-1. Mostrar todas las habitaciones.
-2. Ordenar las habitaciones por número.
-3. Buscar una habitación por número.
-4. Salir del programa.
-
-También se agregó una búsqueda secuencial que permite encontrar una habitación a partir de su número.
+Después de la retroalimentación del profesor, se cambió el almacenamiento principal a una **lista simplemente enlazada** implementada en `lista.h`, donde cada habitación se guarda en un nodo creado con `new`. También se implementó **Merge Sort sobre los enlaces de la lista**, para ordenar por número, tipo, capacidad y precio. Las habitaciones se ordenan por número automáticamente al cargar el archivo.
 
 ### Cambios sobre el primer avance
 
-Se agregó un menú interactivo en `main.cpp` para que el usuario pueda elegir qué operación realizar. Con esto se corrige una de las observaciones realizadas por el profesor en el primer avance.
-
-También se implementó una búsqueda secuencial para consultar habitaciones por su número, utilizando el vector donde se encuentran almacenados los datos.
-
-Se decidió mantener `vector<Habitacion>` porque permite almacenar una cantidad variable de registros, recorrerlos y acceder a ellos mediante sus posiciones.
-
-Por último, se corrigió la documentación para que coincida con el funcionamiento del programa. El algoritmo utilizado es Selection Sort y los datos se cargan desde `habitaciones.txt`.
+1. Se conservó `Habitacion` y la lectura de `habitaciones.txt`. Así no es necesario volver a definir los datos del problema.
+2. Se agregó el menú interactivo para que el programa no sea una ejecución única.
+3. Se sustituyó el vector principal por una lista enlazada dinámica. La cantidad de habitaciones no tiene que fijarse previamente; cada nodo se reserva conforme se lee el archivo y se libera al terminar el programa.
+4. Se sustituyó Selection Sort en el funcionamiento actual por Merge Sort. Selection Sort tiene tiempo O(n²), mientras que Merge Sort permite ordenar O(n log n), una mejor decisión si aumenta la cantidad de habitaciones.
+5. Se agregó el orden inicial por número y las opciones de ordenar por tipo, capacidad y precio. En los empates se usa el número de habitación como segundo criterio.
+6. Se corrigió el README para que coincida con el código actual. `sorts.h` se conserva en el repositorio como parte del primer avance, pero **no se utiliza en el segundo avance**.
 
 ## Instrucciones para compilar el avance de proyecto
 
-Desde la carpeta que contiene los archivos del proyecto, ejecutar el siguiente comando:
+Con `g++` y desde la carpeta que contiene todos los archivos:
 
 ```bash
 g++ main.cpp -std=c++11 -o segundo_avance
@@ -55,22 +43,25 @@ En Windows PowerShell:
 .\segundo_avance.exe
 ```
 
-El archivo `habitaciones.txt` debe encontrarse en la carpeta desde la cual se ejecuta el programa.
+`habitaciones.txt` debe estar en el directorio desde el que se ejecuta el programa.
 
-Al iniciar aparecerá un menú que permite mostrar, ordenar o buscar habitaciones. Después de realizar cada operación, el menú vuelve a aparecer hasta que el usuario selecciona la opción de salir.
+El menú tiene estas opciones:
+
+1. Mostrar habitaciones en su orden actual (inicialmente por número).
+2. Ordenar por número, de menor a mayor.
+3. Ordenar por tipo, alfabéticamente.
+4. Ordenar por capacidad, de menor a mayor.
+5. Ordenar por precio, de menor a mayor.
+6. Buscar una habitación por número.
+7. Salir.
+
+Después de mostrar, ordenar o buscar, el menú vuelve a aparecer. Los ordenamientos modifican el orden de los nodos de la lista, así que la opción 1 muestra el orden seleccionado más recientemente.
 
 ## Descripción de las entradas del avance de proyecto
 
-Los datos se encuentran almacenados en el archivo `habitaciones.txt`.
+El archivo `habitaciones.txt` tiene una habitación por línea, sin encabezados, con cuatro campos separados por espacios: número (`int`), tipo (`string` sin espacios), capacidad (`int`) y precio por noche (`double`).
 
-Cada línea contiene cuatro datos separados por espacios:
-
-- Número de habitación.
-- Tipo de habitación.
-- Capacidad de personas.
-- Precio por noche.
-
-Por ejemplo:
+Ejemplo:
 
 ```text
 305 suite 4 2500
@@ -78,26 +69,20 @@ Por ejemplo:
 210 doble 2 1500
 ```
 
-El programa utiliza `ifstream` para leer los registros, crear los objetos de tipo `Habitacion` y guardarlos en un vector mediante `push_back`.
-
-El usuario también debe ingresar una opción del menú y, cuando quiera buscar una habitación, introducir su número.
+El programa utiliza `ifstream` para leer los cuatro campos y `agregar` para insertar cada habitación al final de la lista. El usuario escribe una opción del menú y, cuando elige buscar, también el número deseado.
 
 ## Descripción de las salidas del avance de proyecto
 
-El programa muestra en consola la información de las habitaciones almacenadas.
+El programa muestra el menú y, según la opción seleccionada, lista las habitaciones en el orden actual o presenta el resultado de una búsqueda.
 
-Dependiendo de la opción seleccionada, puede mostrar las habitaciones en el orden en que fueron leídas, ordenarlas de menor a mayor por número o mostrar una habitación específica.
-
-Por ejemplo, al buscar la habitación 210:
+Ejemplo:
 
 ```text
 Habitacion encontrada:
 Habitacion 210 | Tipo: doble | Capacidad: 2 | Precio: $1500
 ```
 
-Si la habitación solicitada no existe, el programa muestra un mensaje indicando que no fue encontrada.
-
-Si el archivo de datos no puede abrirse, se muestra un mensaje de error y termina la ejecución.
+Si no existe el número, se informa que no se encontró. Si `habitaciones.txt` no puede abrirse, se muestra un error y el programa termina.
 
 ## Desarrollo de competencias
 
@@ -105,84 +90,43 @@ Si el archivo de datos no puede abrirse, se muestra un mensaje de error y termin
 
 #### Análisis de complejidad del algoritmo de ordenamiento
 
-En este proyecto se utiliza Selection Sort para ordenar las habitaciones de menor a mayor por número.
+El segundo avance utiliza Merge Sort en `lista.h`. La función `mergeSort` divide una cadena de nodos en dos, ordena cada parte y la combina mediante `mezclar`. Se recorren O(n) nodos por nivel y hay O(log n) niveles de división. Por ello su tiempo es **O(n log n)** en el mejor, promedio y peor caso. No se crea otro arreglo ni se duplican las habitaciones: se reacomodan los enlaces. La implementación utiliza **O(log n)** espacio auxiliar por las llamadas recursivas de división, más espacio constante en cada combinación.
 
-Este algoritmo busca el elemento mayor dentro de la parte que todavía no está ordenada y lo coloca en su posición correspondiente al final.
+El primer avance utilizó Selection Sort, que realiza O(n²) comparaciones en todos los casos. Se cambió a Merge Sort para que el ordenamiento escale mejor conforme aumenten los registros.
 
-Selection Sort realiza aproximadamente `n(n-1)/2` comparaciones, por lo que su complejidad temporal es:
+#### Análisis de complejidad de las estructuras de datos y sus usos
 
-- Mejor caso: O(n²).
-- Caso promedio: O(n²).
-- Peor caso: O(n²).
+La estructura principal es `ListaHabitaciones`, una lista simplemente enlazada en `lista.h` con punteros `head` y `tail` y un contador de nodos. Cada nodo contiene una `Habitacion` y un puntero al siguiente.
 
-Esto sucede porque el algoritmo realiza las comparaciones aunque los elementos ya se encuentren ordenados.
+- **Agregar al final (`agregar`): O(1)** por registro, porque se mantiene `tail`. Cargar n registros del archivo toma O(n) tiempo en total.
+- **Consultar si está vacía (`empty`) y su tamaño (`size`): O(1)**, porque se revisa `head` o se devuelve el contador.
+- **Mostrar habitaciones (`mostrar`): O(n)**, ya que recorre todos los nodos.
+- **Buscar por número (`buscar`): O(1)** en el mejor caso si está en el primer nodo; **O(n)** en el promedio y peor caso, cuando se recorren varios o todos los nodos.
+- **Ordenar (`ordenar`): O(n log n)** por Merge Sort, más O(n) para actualizar el puntero `tail`. El total sigue siendo O(n log n).
+- **Liberar los nodos (destructor): O(n)**, porque se recorre la lista y se hace `delete` de cada nodo.
 
-En cuanto a memoria, nuestra implementación crea una copia del vector original antes de ordenarlo, por lo que utiliza O(n) de espacio adicional. Sin contar esta copia, las variables utilizadas por el algoritmo requieren O(1) de espacio auxiliar.
-
-#### Análisis de complejidad de las estructuras de datos
-
-Para almacenar las habitaciones se utiliza un `vector<Habitacion>`, que permite guardar los registros de manera dinámica.
-
-Al agregar una habitación mediante `push_back`, la complejidad es O(1) amortizado, ya que normalmente se agrega al final del vector. Sin embargo, algunas inserciones pueden requerir O(n) cuando el vector necesita aumentar su capacidad.
-
-La lectura y almacenamiento de las n habitaciones del archivo tiene una complejidad total amortizada de O(n), porque se recorre cada registro y se agrega al vector.
-
-El acceso a una habitación mediante su posición, utilizando `habitaciones[i]`, tiene complejidad O(1), ya que podemos acceder directamente al elemento.
-
-Las operaciones `size()` y `empty()` también tienen complejidad O(1).
-
-Para mostrar todas las habitaciones, se recorre el vector completo mediante un ciclo `for`, por lo que la complejidad es O(n).
-
-En la búsqueda secuencial, el programa compara el número solicitado con los números de las habitaciones almacenadas. En el mejor caso, la habitación se encuentra en la primera posición y la complejidad es O(1). En el caso promedio y en el peor caso, la complejidad es O(n).
-
-Cuando se utiliza Selection Sort, primero se realiza una copia del vector, lo cual requiere O(n) de tiempo y espacio adicional. Después se realiza el ordenamiento, que tiene complejidad O(n²).
-
-El almacenamiento del vector original requiere O(n) de memoria, dependiendo de la cantidad de habitaciones. Al ordenar se crea temporalmente otra copia, por lo que el espacio total utilizado sigue siendo O(n).
+El almacenamiento de n habitaciones en la lista requiere **O(n)** espacio. La lectura de archivo se hace registro por registro; el ordenamiento agrega O(log n) espacio auxiliar por recursión. Al iniciar, el programa ordena por número antes de presentar el menú.
 
 ### SICT0302: Toma decisiones
 
 #### Selección del algoritmo de ordenamiento
 
-Se decidió mantener Selection Sort porque es un algoritmo sencillo que permite organizar correctamente las habitaciones y corresponde a los algoritmos vistos durante el curso.
+Se eligió Merge Sort porque O(n log n) es más adecuado que O(n²) al crecer la cantidad de habitaciones. Además, el algoritmo puede aplicarse directamente a una lista enlazada separando y uniendo cadenas de nodos, sin copiar los registros a un vector.
 
-Aunque tiene una complejidad O(n²), para la cantidad de habitaciones que se manejan actualmente en el proyecto resulta suficiente.
-
-Además, se implementa directamente en `sorts.h`, sin utilizar funciones de ordenamiento de la biblioteca estándar de C++.
-
-El algoritmo utiliza el operador `>` definido para la clase `Habitacion`, que permite comparar las habitaciones por su número.
+La función `vaPrimero` compara según el criterio indicado: número, tipo, capacidad o precio. Cuando dos habitaciones tienen el mismo tipo, capacidad o precio, se compara el número para conservar un orden definido. La implementación está en `lista.h`.
 
 #### Selección de la estructura de datos
 
-Se eligió utilizar un `vector<Habitacion>` porque permite almacenar las habitaciones sin necesidad de conocer previamente la cantidad de registros.
+Se eligió una lista simplemente enlazada implementada con nodos dinámicos porque el programa debe poder cargar una cantidad variable de habitaciones sin establecer un límite fijo en el código. El puntero `tail` facilita las inserciones al final con O(1), y la lista permite hacer Merge Sort cambiando los enlaces de sus nodos.
 
-También facilita recorrer los datos, acceder a cada habitación mediante su posición y realizar búsquedas.
-
-Para este avance, el vector es suficiente porque las consultas son sencillas y no es necesario utilizar estructuras más complejas.
-
-Su implementación se encuentra en `main.cpp`, donde se almacenan los registros leídos desde el archivo y se utilizan para las diferentes operaciones del menú.
+La lista tiene una limitación: no ofrece acceso directo por posición como un vector y la búsqueda por número sigue siendo O(n). Si el hotel llegara a necesitar muchísimas consultas por número, sería útil estudiar un índice adicional, como un árbol balanceado o una tabla hash. Para este avance se priorizó aplicar correctamente una estructura dinámica y un ordenamiento que no dependa de un tamaño pequeño de prueba.
 
 ### SICT0303: Implementa acciones científicas
 
 #### Mecanismos para consultar información de las estructuras
 
-El programa cuenta con funciones que permiten consultar la información almacenada en el vector.
-
-La función `mostrarHabitaciones` recorre todos los elementos y muestra los datos de cada habitación.
-
-También se implementó la función `buscarHabitacion`, que realiza una búsqueda secuencial comparando el número solicitado por el usuario con el valor obtenido mediante `getNumero()`.
-
-Si encuentra la habitación, muestra su información. En caso contrario, indica que no existe dentro de los registros almacenados.
-
-Adicionalmente, el usuario puede consultar las habitaciones ordenadas por número utilizando Selection Sort desde el menú.
+`mostrar` recorre la lista y presenta todas las habitaciones. `buscar` avanza por sus nodos, compara el número de la habitación con `getNumero()` y devuelve la habitación encontrada o un puntero nulo. El menú permite consultar los registros en el orden predeterminado o elegir otros criterios de ordenamiento. Estas operaciones se implementaron en `lista.h` y se utilizan desde `main.cpp`.
 
 #### Mecanismos de lectura de archivos para cargar datos
 
-Para cargar los registros se utiliza `ifstream`, que permite leer la información desde el archivo `habitaciones.txt`.
-
-El programa abre el archivo y utiliza un ciclo `while` para leer el número, tipo, capacidad y precio de cada habitación.
-
-Con estos datos se crea un objeto de tipo `Habitacion`, que después se agrega al vector mediante `push_back`.
-
-Cuando termina la lectura, el archivo se cierra y las habitaciones quedan almacenadas para ser utilizadas durante la ejecución.
-
-También se verifica que el archivo pueda abrirse correctamente. Si ocurre un error, se muestra un mensaje y el programa termina.
+`main.cpp` abre `habitaciones.txt` mediante `ifstream`. El ciclo `while (archivo >> numero >> tipo >> capacidad >> precio)` lee los cuatro campos de cada registro; construye un objeto `Habitacion` y lo inserta mediante `habitaciones.agregar(habitacion)`. Se cierra el archivo después de la carga. Si no se puede abrir, el programa informa el problema y termina sin entrar al menú.
