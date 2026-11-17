@@ -19,7 +19,7 @@ private:
     Nodo *tail;
     int cantidad;
 
-    // Los empates se resuelven por numero para mantener un orden claro.
+    // Compara habitaciones segun el criterio y desempata por numero.
     bool vaPrimero(const Habitacion &a, const Habitacion &b, int criterio) const {
         if (criterio == 2 && a.getTipo() != b.getTipo()) {
             return a.getTipo() < b.getTipo();
@@ -33,6 +33,7 @@ private:
         return a.getNumero() <= b.getNumero();
     }
 
+    // Une dos cadenas de nodos que ya estan ordenadas.
     Nodo *mezclar(Nodo *izquierda, Nodo *derecha, int criterio) {
         Nodo auxiliar{Habitacion()};
         Nodo *ultimo = &auxiliar;
@@ -55,8 +56,11 @@ private:
         return auxiliar.siguiente;
     }
 
+    // Divide la lista en dos partes y las ordena con Merge Sort.
     Nodo *mergeSort(Nodo *inicio, int criterio) {
-        if (inicio == 0 || inicio->siguiente == 0) return inicio;
+        if (inicio == 0 || inicio->siguiente == 0) {
+            return inicio;
+        }
 
         Nodo *lento = inicio;
         Nodo *rapido = inicio->siguiente;
@@ -73,12 +77,14 @@ private:
     }
 
 public:
+    // Inicia una lista vacia.
     ListaHabitaciones() : head(0), tail(0), cantidad(0) {}
 
     // Evita copiar punteros de una lista con propiedad de sus nodos.
     ListaHabitaciones(const ListaHabitaciones &) = delete;
     ListaHabitaciones &operator=(const ListaHabitaciones &) = delete;
 
+    // Libera todos los nodos al terminar el programa.
     ~ListaHabitaciones() {
         Nodo *actual = head;
         while (actual != 0) {
@@ -88,7 +94,8 @@ public:
         }
     }
 
-    void agregar(const Habitacion &habitacion) {
+    // Agrega al final y regresa la direccion para el indice AVL.
+    const Habitacion *agregar(const Habitacion &habitacion) {
         Nodo *nuevo = new Nodo(habitacion);
         if (head == 0) {
             head = nuevo;
@@ -97,11 +104,41 @@ public:
         }
         tail = nuevo;
         cantidad++;
+        return &nuevo->habitacion;
     }
 
+    // Inserta una nueva habitacion segun el orden actual.
+    const Habitacion *insertarOrdenado(const Habitacion &habitacion, int criterio) {
+        Nodo *nuevo = new Nodo(habitacion);
+        if (head == 0 || vaPrimero(habitacion, head->habitacion, criterio)) {
+            nuevo->siguiente = head;
+            head = nuevo;
+            if (tail == 0) {
+                tail = nuevo;
+            }
+        } else {
+            Nodo *actual = head;
+            while (actual->siguiente != 0 &&
+                   !vaPrimero(habitacion, actual->siguiente->habitacion, criterio)) {
+                actual = actual->siguiente;
+            }
+            nuevo->siguiente = actual->siguiente;
+            actual->siguiente = nuevo;
+            if (nuevo->siguiente == 0) {
+                tail = nuevo;
+            }
+        }
+        cantidad++;
+        return &nuevo->habitacion;
+    }
+
+    // Revisa si la lista esta vacia.
     bool empty() const { return head == 0; }
+
+    // Regresa el numero de habitaciones.
     int size() const { return cantidad; }
 
+    // Muestra las habitaciones en el orden actual.
     void mostrar() const {
         if (empty()) {
             std::cout << "No hay habitaciones para mostrar." << std::endl;
@@ -114,18 +151,7 @@ public:
         }
     }
 
-    const Habitacion *buscar(int numero) const {
-        Nodo *actual = head;
-        while (actual != 0) {
-            if (actual->habitacion.getNumero() == numero) {
-                return &actual->habitacion;
-            }
-            actual = actual->siguiente;
-        }
-        return 0;
-    }
-
-    // Criterio: 1 numero, 2 tipo, 3 capacidad, 4 precio.
+    // Ordena por numero, tipo, capacidad o precio.
     void ordenar(int criterio) {
         head = mergeSort(head, criterio);
         tail = head;
