@@ -17,6 +17,7 @@ public:
 
 
 template <class T>
+// Intercambia dos posiciones del vector.
 void Sorts<T>::swap(std::vector<T> &v, int i, int j) {
 
     T aux = v[i];
@@ -27,6 +28,7 @@ void Sorts<T>::swap(std::vector<T> &v, int i, int j) {
 
 
 template <class T>
+// Ordena una copia del vector usando Selection Sort.
 std::vector<T> Sorts<T>::selectionSort(const std::vector<T> &source) {
 
     std::vector<T> v(source);
