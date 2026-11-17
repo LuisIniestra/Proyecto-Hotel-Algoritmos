@@ -27,6 +27,7 @@ public:
 };
 
 
+// Inicia una habitacion sin datos.
 Habitacion::Habitacion() {
 
     numero = 0;
@@ -36,6 +37,7 @@ Habitacion::Habitacion() {
 }
 
 
+// Guarda los datos de una habitacion.
 Habitacion::Habitacion(int num, std::string tip, int cap, double pre) {
 
     numero = num;
@@ -45,30 +47,35 @@ Habitacion::Habitacion(int num, std::string tip, int cap, double pre) {
 }
 
 
+// Regresa el numero de habitacion.
 int Habitacion::getNumero() const {
 
     return numero;
 }
 
 
+// Regresa el tipo de habitacion.
 std::string Habitacion::getTipo() const {
 
     return tipo;
 }
 
 
+// Regresa la capacidad de personas.
 int Habitacion::getCapacidad() const {
 
     return capacidad;
 }
 
 
+// Regresa el precio por noche.
 double Habitacion::getPrecio() const {
 
     return precio;
 }
 
 
+// Convierte los datos a texto para mostrarlos.
 std::string Habitacion::toString() const {
 
     std::stringstream aux;
