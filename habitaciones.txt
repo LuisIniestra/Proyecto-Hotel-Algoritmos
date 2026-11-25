@@ -1,0 +1,10 @@
+101 individual 2 750.00 disponible
+102 individual 1 900.00 disponible
+105 individual 2 950.00 ocupada
+109 individual 1 850.00 disponible
+202 doble 2 1400.00 disponible
+204 doble 3 1800.00 ocupada
+210 doble 2 1500.00 disponible
+301 suite 4 2700.00 disponible
+305 suite 4 2500.00 ocupada
+407 suite 5 3200.00 disponible
